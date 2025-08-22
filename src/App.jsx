@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Hero from './components/Hero'
 import Vision from './components/Vision'
@@ -20,18 +20,36 @@ function App() {
   ]
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const windowHeight = window.innerHeight
-      const sectionHeight = windowHeight * 0.8
-      
-      const currentSection = Math.floor(scrollPosition / sectionHeight)
-      setActiveSection(Math.min(currentSection, sections.length - 1))
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -70% 0px', // Section is active when 20% from top and 70% from bottom
+      threshold: 0
     }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id
+          const sectionIndex = sections.indexOf(sectionId)
+          if (sectionIndex !== -1) {
+            setActiveSection(sectionIndex)
+          }
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(handleIntersection, observerOptions)
+    
+    // Observe all sections
+    sections.forEach(sectionId => {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        observer.observe(element)
+      }
+    })
+
+    return () => observer.disconnect()
+  }, [sections])
 
   const scrollToSection = (sectionIndex) => {
     const element = document.getElementById(sections[sectionIndex])
