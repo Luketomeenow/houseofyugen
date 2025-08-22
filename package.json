@@ -1,6 +1,7 @@
 {
   "name": "house-of-yugen-pitch-deck",
   "version": "1.0.0",
+  "type": "module",
   "description": "Interactive pitch deck for House of Yugen custom voting platform proposal",
   "main": "index.js",
   "scripts": {
