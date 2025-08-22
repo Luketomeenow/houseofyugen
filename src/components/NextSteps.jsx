@@ -2,7 +2,8 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Rocket, Play, Calendar, CheckCircle, ArrowRight } from 'lucide-react'
+import { Rocket, Play, Calendar, CheckCircle, ArrowRight, Download } from 'lucide-react'
+import { generateProposalPDF } from '../utils/pdfGenerator'
 
 const NextSteps = () => {
   const ref = useRef(null)
@@ -22,6 +23,14 @@ const NextSteps = () => {
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 }
+  }
+
+  const handleDownloadPDF = async () => {
+    try {
+      await generateProposalPDF()
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+    }
   }
 
   const timelineSteps = [
@@ -218,12 +227,13 @@ const NextSteps = () => {
               </motion.button>
               
               <motion.button
+                onClick={handleDownloadPDF}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 border-2 border-yugen-gold text-yugen-gold font-semibold rounded-lg hover:bg-yugen-gold hover:text-yugen-black transition-all duration-300 flex items-center space-x-2"
               >
+                <Download className="w-5 h-5" />
                 <span>Download Proposal</span>
-                <ArrowRight className="w-5 h-5" />
               </motion.button>
             </div>
           </motion.div>
